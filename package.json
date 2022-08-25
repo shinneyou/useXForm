@@ -4,6 +4,9 @@
   "description": "the common hook can be used for form-render and antd-form",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
