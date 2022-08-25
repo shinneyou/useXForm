@@ -5,7 +5,6 @@ import commonjs from "rollup-plugin-commonjs"; // commonjs模块转换插件
 
 import pkg from "./package.json";
 
-console.log("pkg", pkg);
 export default [
   {
     input: "src/index.ts", // 入口文件
