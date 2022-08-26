@@ -1,8 +1,39 @@
-export interface IFieldData {
+/**
+ * 两种表单的type,供使用者判断
+ */
+export enum FORM_TYPE {
+  ANTD = "ANTD_FORM",
+  XRENDER = "XRENDER FORM",
+}
+
+/**
+ *
+ */
+
+export interface IValidateData {
+  data: Record<string, any>;
+  errors: IFieldErrorX[];
+}
+
+/**
+ * 设置表单项状态接口
+ */
+export interface IFieldData extends IField {
+  /**
+   * 错误信息
+   */
+  errors: string[];
+}
+/**
+ * 设置表单项状态接口xrender
+ */
+export interface IFieldDataX extends IField {
   /**
    * 错误信息
    */
   error: string[];
+}
+export interface IField {
   /**
    * 字段path
    */
@@ -22,13 +53,39 @@ export interface IFieldData {
 }
 
 /**
+ * Meta
+ */
+export interface IMeta {
+  /**
+   * 用户操作过
+   */
+  touched: boolean;
+  /**
+   * 是否在较严重
+   */
+  validating: boolean;
+}
+/**
+ * xrender 的 Error
+ */
+export interface IFieldErrorX {
+  /**
+   * 错误的数据路径
+   */
+  name: string;
+  /**
+   * 错误的内容
+   */
+  error: string[];
+}
+/**
  * 设置报错信息
  */
 export interface IFieldError {
   /**
    * 错误的数据路径
    */
-  name: string;
+  name: string[];
   /**
    * 错误的内容
    */
@@ -49,7 +106,7 @@ export interface IFormApi {
    */
   getFieldsValue: (
     nameList?: string[],
-    filterFunc?: (meta: { touched: boolean; validating: boolean }) => boolean
+    filterFunc?: (meta: Partial<IMeta>) => boolean
   ) => Record<string, any>;
   /**
    * 设置整个表单的值
@@ -89,10 +146,10 @@ export interface IFormApi {
   setFields: (fields: Partial<IFieldData>[]) => void;
 
   // 以下方法透出待讨论
-  resetFields: (fields?: string[]) => void; //antdform
-  getFieldInstance: (name: string) => any; //antdform
-  setSchemaByPath: (path: string, schema: Record<string, any>) => void;
-  setSchema: (schema: Record<string, Record<string, any>>) => void;
+  resetFields?: (fields?: string[]) => void; //antdform
+  getFieldInstance?: (name: string) => any; //antdform
+  setSchemaByPath?: (path: string, schema: Record<string, any>) => void;
+  setSchema?: (schema: Record<string, Record<string, any>>) => void;
 }
 
 /**
@@ -111,6 +168,10 @@ export interface IForm {
    * 表单onChange
    */
   onChange: (value: any) => void;
+  /**
+   * form的类型
+   */
+  type: typeof FORM_TYPE[keyof typeof FORM_TYPE];
   /**
    * 挂载在form下的api
    */
