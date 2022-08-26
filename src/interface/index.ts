@@ -133,6 +133,10 @@ export interface IFormApi {
    */
   isFieldsTouched: (nameList?: string[], allTouched?: boolean) => boolean;
   /**
+   * 该表单项是否正在校验
+   */
+  isFieldValidating: (name: string) => boolean;
+  /**
    * 触发表单校验
    */
   validateFields: (nameList?: string[]) => Promise<any>;

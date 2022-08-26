@@ -46,24 +46,22 @@ export default (props: any): IForm => {
     });
   }, []);
 
-  const validateFieldsX = useCallback((nameList?: string[]): Promise<any> => {
-    return new Promise(
-      addons.validateFields(nameList).then(
-        (res: Record<string, any>) => {
-          return Promise.resolve(res);
-        },
-        (errorRes: IValidateData) => {
-          return Promise.reject({
-            errorFields: errorRes.errors.map((item: IFieldErrorX) => {
-              return {
-                errors: item.error,
-                name: [item.name],
-              };
-            }),
-            values: errorRes.data,
-          });
-        }
-      )
+  const validateFieldsX = useCallback((nameList?: string[]) => {
+    return addons.validateFields(nameList).then(
+      (res: Record<string, any>) => {
+        return Promise.resolve(res);
+      },
+      (errorRes: IValidateData) => {
+        return Promise.reject({
+          errorFields: errorRes.errors.map((item: IFieldErrorX) => {
+            return {
+              errors: item.error,
+              name: [item.name],
+            };
+          }),
+          values: errorRes.data,
+        });
+      }
     );
   });
 
