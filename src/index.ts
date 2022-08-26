@@ -108,6 +108,9 @@ export default (props: any): IForm => {
       isFieldsTouched: isXrender
         ? addons.isFieldsTouched
         : form.isFieldsTouched,
+      isFieldValidating: isXrender
+        ? addons.isFieldValidating
+        : form.isFieldValidating,
       validateFields: isXrender ? validateFieldsX : form.validateFields,
       scrollToField: isXrender ? addons.scrollToPath : form.scrollToField,
       setFields: isXrender ? setFieldsX : form.setFields,
