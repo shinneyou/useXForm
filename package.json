@@ -1,6 +1,6 @@
 {
   "name": "usexform",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "the common hook can be used for form-render and antd-form",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,7 +36,6 @@
     "eslint": "^8.22.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
-    "react": "^18.2.0",
     "rollup": "^2.78.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-dts": "^4.2.2",
@@ -50,5 +49,9 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript2": "^0.33.0",
     "typescript": "^4.7.4"
+  },
+  "peerDependencies": {
+    "react": ">=16.12.0",
+    "lodash-es": ">=1.0.0"
   }
 }

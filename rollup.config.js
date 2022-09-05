@@ -2,8 +2,6 @@
 import typescript from "rollup-plugin-typescript2";
 import dts from "rollup-plugin-dts";
 import commonjs from "rollup-plugin-commonjs"; // commonjs模块转换插件
-import react from "react";
-
 import pkg from "./package.json";
 
 export default [
@@ -14,11 +12,21 @@ export default [
         file: pkg.main, // 输出文件名称
         format: "cjs", // 输出模块格式
         sourcemap: false, // 是否输出sourcemap
+        // 添加globals
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
       },
       {
         file: pkg.module,
         format: "esm",
         sourcemap: false,
+        // 添加globals
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
       },
     ],
     plugins: [
@@ -33,10 +41,12 @@ export default [
       commonjs({
         include: "node_modules/**",
         namedExports: {
-          react: Object.keys(react),
+          // react: Object.keys(react),
         },
       }),
     ],
+    // 添加externs
+    external: ["react", "react-dom"],
   },
   {
     input: "src/index.ts", // 入口文件
@@ -45,13 +55,25 @@ export default [
         file: "lib/index.d.ts", // 输出文件名称
         format: "es", // 输出模块格式
         sourcemap: false, // 是否输出sourcemap
+        // 添加globals
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
       },
       {
         file: "es/index.d.ts", // 输出文件名称
         format: "es", // 输出模块格式
         sourcemap: false, // 是否输出sourcemap
+        // 添加globals
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
       },
     ],
     plugins: [dts()],
+    // 添加externs
+    external: ["react", "react-dom"],
   },
 ];

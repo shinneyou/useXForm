@@ -8,14 +8,14 @@ import {
   IFormApi,
 } from "./interface";
 import { FORM_TYPE } from "./constans";
-import { set } from "lodash-es";
+import set from "lodash-es/set";
 
 const { XRENDER, ANTD } = FORM_TYPE;
 const defaultFun = () => {
   console.warn("api调用失败，请使用该组件时传入form实例");
 };
 export default (props: any): IForm => {
-  const { onChange, value, addons = {}, form } = props;
+  const { onChange, value, addons = {}, form, id } = props;
   const [type, setType] = useState(props.addons ? XRENDER : ANTD);
   const isXrender = !!props.addons;
 
@@ -181,7 +181,7 @@ export default (props: any): IForm => {
     type,
     onChange,
     value,
-    id: isXrender ? props?.addons?.dataPath : props?.form?.id,
+    id: isXrender ? props?.addons?.dataPath : id,
     form: {
       ...formApis,
       setSchemaByPath: setSchemaByPathMixin,
