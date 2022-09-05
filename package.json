@@ -2,10 +2,12 @@
   "name": "usexform",
   "version": "1.0.0",
   "description": "the common hook can be used for form-render and antd-form",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
   "files": [
-    "dist/**/*"
+    "lib/**/*",
+    "es/**/*",
+    "package.json"
   ],
   "scripts": {
     "build": "rollup -c rollup.config.js",

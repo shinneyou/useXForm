@@ -2,6 +2,7 @@
 import typescript from "rollup-plugin-typescript2";
 import dts from "rollup-plugin-dts";
 import commonjs from "rollup-plugin-commonjs"; // commonjs模块转换插件
+import react from "react";
 
 import pkg from "./package.json";
 
@@ -29,14 +30,24 @@ export default [
         },
         useTsconfigDeclarationDir: true, // 使用tsconfig中的声明文件目录配置
       }),
-      commonjs(),
+      commonjs({
+        include: "node_modules/**",
+        namedExports: {
+          react: Object.keys(react),
+        },
+      }),
     ],
   },
   {
     input: "src/index.ts", // 入口文件
     output: [
       {
-        file: "dist/index.d.ts", // 输出文件名称
+        file: "lib/index.d.ts", // 输出文件名称
+        format: "es", // 输出模块格式
+        sourcemap: false, // 是否输出sourcemap
+      },
+      {
+        file: "es/index.d.ts", // 输出文件名称
         format: "es", // 输出模块格式
         sourcemap: false, // 是否输出sourcemap
       },

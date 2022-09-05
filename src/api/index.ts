@@ -4,7 +4,6 @@ import {
   IValidateData,
   IFieldData,
 } from "../interface";
-import { set } from "lodash-es";
 
 export const transformSubmit = (fn: Function) => {
   function transformFn() {
@@ -22,7 +21,7 @@ export const transformSetFieldsValue = (fn: Function, getValues: Function) => {
     if (values) {
       const res = { ...formData };
       Object.keys(values).forEach((key) => {
-        set(res, key, values[key]);
+        res[key] = values[key];
       });
       fn(res);
     }

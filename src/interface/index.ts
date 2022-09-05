@@ -150,7 +150,7 @@ export interface IFormApi {
   setFields: (fields: Partial<IFieldData>[]) => void;
 
   // 以下方法透出待讨论
-  resetFields?: (fields?: string[]) => void; //antdform
+  resetFields?: (fields?: string[]) => void; //antdform @TODO:
   getFieldInstance?: (name: string) => any; //antdform
   setSchemaByPath?: (path: string, schema: Record<string, any>) => void;
   setSchema?: (schema: Record<string, Record<string, any>>) => void;

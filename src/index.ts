@@ -5,9 +5,10 @@ import {
   IFieldErrorX,
   IValidateData,
   IFieldData,
+  IFormApi,
 } from "./interface";
-import { set } from "lodash-es";
 import { FORM_TYPE } from "./constans";
+import { set } from "lodash-es";
 
 const { XRENDER, ANTD } = FORM_TYPE;
 const defaultFun = () => {
@@ -26,6 +27,14 @@ export default (props: any): IForm => {
         set(res, key, values[key]);
       });
       addons.setValues(res);
+    }
+  }, []);
+
+  const setFieldValueAntd = useCallback((name: string, value: any) => {
+    if (form.setFieldValue) {
+      form.setFieldValue(name, value);
+    } else {
+      form.setFieldsValue({ [name]: value });
     }
   }, []);
 
@@ -82,6 +91,28 @@ export default (props: any): IForm => {
     );
   });
 
+  const setSchemaByPathMixin = useCallback(
+    (name: string, schema: Record<string, any>) => {
+      console.warn(
+        "当前使用的是 xrender setSchemaByPath 方法，仅支持在xrender中使用，请更换实现方式如在onValuesChange中处理联动逻辑"
+      );
+      if (isXrender) {
+        addons.setSchemaAntdByPath(name, schema);
+      }
+    }
+  );
+
+  const setSchemaMixin = useCallback(
+    (schema: Record<string, Record<string, any>>) => {
+      console.warn(
+        "当前使用的是 xrender setSchemaByPath 方法，仅支持在xrender中使用，请更换实现方式如在onValuesChange中处理联动逻辑"
+      );
+      if (isXrender) {
+        addons.setSchema(schema);
+      }
+    }
+  );
+
   useEffect(() => {
     const { addons = {} } = props;
     // 说明是xrender
@@ -91,29 +122,66 @@ export default (props: any): IForm => {
       console.log(">>>>>> usexform creating, !!!use antdForm");
     }
   }, []);
+  let formApis = {} as IFormApi;
+  if (isXrender) {
+    formApis = {
+      getFieldValue: addons.getValue,
+      setFieldValue: addons.setValueByPath, // @TODO: form.setFieldValue 这里待修改 4.22 才支持
+      getFieldsValue: addons.getValues,
+      setFieldsValue: setFieldsValueX,
+      submit: submitX,
+      getFieldError: addons.getFieldError,
+      getFieldsError: getFieldsErrorX,
+      isFieldTouched: addons.isFieldTouched,
+      isFieldsTouched: addons.isFieldsTouched,
+      isFieldValidating: addons.isFieldValidating,
+      validateFields: validateFieldsX,
+      scrollToField: addons.scrollToPath,
+      setFields: setFieldsX,
+    };
+  } else {
+    formApis = {
+      getFieldValue: form.getFieldValue,
+      setFieldValue: setFieldValueAntd, // @TODO: form.setFieldValue 这里待修改 4.22 才支持
+      getFieldsValue: form.getFieldsValue,
+      setFieldsValue: form.setFieldsValue,
+      submit: form.submit,
+      getFieldError: form.getFieldError,
+      getFieldsError: form.getFieldsError,
+      isFieldTouched: form.isFieldTouched,
+      isFieldsTouched: form.isFieldsTouched,
+      isFieldValidating: form.isFieldValidating,
+      validateFields: form.validateFields,
+      scrollToField: form.scrollToField,
+      setFields: form.setFields,
+    };
+  }
   return {
     type,
     onChange,
     value,
     id: isXrender ? props?.addons?.dataPath : props?.form?.id,
     form: {
-      getFieldValue: isXrender ? addons.getValue : form.getFieldValue,
-      setFieldValue: isXrender ? addons.setValueByPath : form.setFieldValue, // form.setFieldValue 这里待修改 4.22 才支持
-      getFieldsValue: isXrender ? addons.getValues : form.getFieldsValue,
-      setFieldsValue: isXrender ? setFieldsValueX : form.setFieldsValue,
-      submit: isXrender ? submitX : form.submit,
-      getFieldError: isXrender ? addons.getFieldError : form.getFieldError,
-      getFieldsError: isXrender ? getFieldsErrorX : form.getFieldsError,
-      isFieldTouched: isXrender ? addons.isFieldTouched : form.isFieldTouched,
-      isFieldsTouched: isXrender
-        ? addons.isFieldsTouched
-        : form.isFieldsTouched,
-      isFieldValidating: isXrender
-        ? addons.isFieldValidating
-        : form.isFieldValidating,
-      validateFields: isXrender ? validateFieldsX : form.validateFields,
-      scrollToField: isXrender ? addons.scrollToPath : form.scrollToField,
-      setFields: isXrender ? setFieldsX : form.setFields,
+      // getFieldValue: isXrender ? addons.getValue : form.getFieldValue,
+      // setFieldValue: isXrender ? addons.setValueByPath : form.setFieldValue, // @TODO: form.setFieldValue 这里待修改 4.22 才支持
+      // getFieldsValue: isXrender ? addons.getValues : form.getFieldsValue,
+      // setFieldsValue: isXrender ? setFieldsValueX : form.setFieldsValue,
+      // submit: isXrender ? submitX : form.submit,
+      // getFieldError: isXrender ? addons.getFieldError : form.getFieldError,
+      // getFieldsError: isXrender ? getFieldsErrorX : form.getFieldsError,
+      // isFieldTouched: isXrender ? addons.isFieldTouched : form.isFieldTouched,
+      // isFieldsTouched: isXrender
+      //   ? addons.isFieldsTouched
+      //   : form.isFieldsTouched,
+      // isFieldValidating: isXrender
+      //   ? addons.isFieldValidating
+      //   : form.isFieldValidating,
+      // validateFields: isXrender ? validateFieldsX : form.validateFields,
+      // scrollToField: isXrender ? addons.scrollToPath : form.scrollToField,
+      // setFields: isXrender ? setFieldsX : form.setFields,
+      ...formApis,
+      setSchemaByPath: setSchemaByPathMixin,
+      setSchema: setSchemaMixin,
     },
   };
 };
