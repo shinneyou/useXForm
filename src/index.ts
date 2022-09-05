@@ -43,7 +43,7 @@ export default (props: any): IForm => {
       "当前使用的是 submit 方法，已与antd form方法保持一致无promise返回，你可使用validateFields 方法代替"
     );
     addons.submit();
-  });
+  }, []);
 
   const getFieldsErrorX = useCallback((nameList?: string[]): IFieldError => {
     const res = addons.getFieldsError(nameList);
@@ -72,7 +72,7 @@ export default (props: any): IForm => {
         });
       }
     );
-  });
+  }, []);
 
   const setFieldsX = useCallback((fields: IFieldData[]) => {
     if (!Array.isArray(fields)) {
@@ -89,7 +89,7 @@ export default (props: any): IForm => {
         };
       })
     );
-  });
+  }, []);
 
   const setSchemaByPathMixin = useCallback(
     (name: string, schema: Record<string, any>) => {
@@ -99,7 +99,8 @@ export default (props: any): IForm => {
       if (isXrender) {
         addons.setSchemaAntdByPath(name, schema);
       }
-    }
+    },
+    []
   );
 
   const setSchemaMixin = useCallback(
@@ -110,8 +111,27 @@ export default (props: any): IForm => {
       if (isXrender) {
         addons.setSchema(schema);
       }
-    }
+    },
+    []
   );
+
+  const resetFieldsMinxin = useCallback((fields?: string[]) => {
+    console.warn(
+      "当前使用的是 antd Form resetFields 方法，仅支持在antd Form中使用，请更换实现方式"
+    );
+    if (!isXrender) {
+      form.resetFields(fields);
+    }
+  }, []);
+
+  const getFieldInstanceMinxin = useCallback((name: string) => {
+    console.warn(
+      "当前使用的是 antd Form getFieldInstance 方法，仅支持在antd Form中使用，请更换实现方式"
+    );
+    if (!isXrender) {
+      return form.getFieldInstance(name);
+    }
+  });
 
   useEffect(() => {
     const { addons = {} } = props;
@@ -122,11 +142,12 @@ export default (props: any): IForm => {
       console.log(">>>>>> usexform creating, !!!use antdForm");
     }
   }, []);
+
   let formApis = {} as IFormApi;
   if (isXrender) {
     formApis = {
       getFieldValue: addons.getValue,
-      setFieldValue: addons.setValueByPath, // @TODO: form.setFieldValue 这里待修改 4.22 才支持
+      setFieldValue: addons.setValueByPath,
       getFieldsValue: addons.getValues,
       setFieldsValue: setFieldsValueX,
       submit: submitX,
@@ -142,7 +163,7 @@ export default (props: any): IForm => {
   } else {
     formApis = {
       getFieldValue: form.getFieldValue,
-      setFieldValue: setFieldValueAntd, // @TODO: form.setFieldValue 这里待修改 4.22 才支持
+      setFieldValue: setFieldValueAntd,
       getFieldsValue: form.getFieldsValue,
       setFieldsValue: form.setFieldsValue,
       submit: form.submit,
@@ -162,26 +183,11 @@ export default (props: any): IForm => {
     value,
     id: isXrender ? props?.addons?.dataPath : props?.form?.id,
     form: {
-      // getFieldValue: isXrender ? addons.getValue : form.getFieldValue,
-      // setFieldValue: isXrender ? addons.setValueByPath : form.setFieldValue, // @TODO: form.setFieldValue 这里待修改 4.22 才支持
-      // getFieldsValue: isXrender ? addons.getValues : form.getFieldsValue,
-      // setFieldsValue: isXrender ? setFieldsValueX : form.setFieldsValue,
-      // submit: isXrender ? submitX : form.submit,
-      // getFieldError: isXrender ? addons.getFieldError : form.getFieldError,
-      // getFieldsError: isXrender ? getFieldsErrorX : form.getFieldsError,
-      // isFieldTouched: isXrender ? addons.isFieldTouched : form.isFieldTouched,
-      // isFieldsTouched: isXrender
-      //   ? addons.isFieldsTouched
-      //   : form.isFieldsTouched,
-      // isFieldValidating: isXrender
-      //   ? addons.isFieldValidating
-      //   : form.isFieldValidating,
-      // validateFields: isXrender ? validateFieldsX : form.validateFields,
-      // scrollToField: isXrender ? addons.scrollToPath : form.scrollToField,
-      // setFields: isXrender ? setFieldsX : form.setFields,
       ...formApis,
       setSchemaByPath: setSchemaByPathMixin,
       setSchema: setSchemaMixin,
+      getFieldInstance: getFieldInstanceMinxin,
+      resetFields: resetFieldsMinxin,
     },
   };
 };
